@@ -1,0 +1,59 @@
+% Pessoa, idade e profissão
+pessoa(joao, 35, engenheiro).
+pessoa(maria, 28, advogada).
+pessoa(carlos, 40, empresario).
+pessoa(gabriel, 21, desempregado).
+
+% Renda mensal
+renda_mensal(joao, 1500).
+renda_mensal(maria, 6200).
+renda_mensal(carlos, 8000).
+renda_mensal(gabriel, 25000).
+
+% Pontuação de crédito
+pontuacao_credito(joao, 320).
+pontuacao_credito(maria, 741).
+pontuacao_credito(carlos, 750).
+pontuacao_credito(gabriel, 200).
+
+% Perfil de investimento
+perfil_investimento(joao, passivo).
+perfil_investimento(maria, mediano).
+perfil_investimento(carlos, agressivo).
+perfil_investimento(gabriel, passivo).
+
+% Histórico de inadimplência
+inadimplente(joao).
+
+% Regras
+
+% Análise de crédito
+pode_conceder_emprestimo(Pessoa) :-
+    pontuacao_credito(Pessoa, Pontuacao),
+    renda_mensal(Pessoa, Renda),
+    not(inadimplente(Pessoa)),
+    Pontuacao >= 740,
+    Renda >= 6000.
+
+% Investimentos
+verificar_investimento(Pessoa) :-
+    pode_conceder_emprestimo(Pessoa),
+    not(inadimplente(Pessoa)),
+    perfil_investimento(Pessoa, Perfil),
+    (   Perfil == passivo ->
+        Percentagem is 10
+    ;   Perfil == mediano ->
+        Percentagem is 30
+    ;   Perfil == agressivo ->
+        Percentagem is 80
+    ),
+    format('Investir ~w%% do valor em uma carteira
+    ~w para ~w.', [Percentagem, Perfil, Pessoa]).
+
+% Verificar fraude
+verificar_fraude(Pessoa) :-
+    renda_mensal(Pessoa, Renda),
+    pontuacao_credito(Pessoa, Pontuacao),
+    Renda >= 3000,
+    Pontuacao < 600,
+    format('Possível fraude detectada para ~w.', [Pessoa]).
